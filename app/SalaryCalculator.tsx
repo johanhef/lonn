@@ -7,8 +7,6 @@ const SalaryCalculator = () => {
     yearlySalary: "",
     monthlySalary: "",
   });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (isNaN(Number(value))) return;
