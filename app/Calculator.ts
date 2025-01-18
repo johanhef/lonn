@@ -4,6 +4,8 @@ export type TaxCalculationResult = {
     monthlySalaryNet: number;
     vacationMoney: number;
     netMonthlyAdjusted: number;
+    normalMonthNet: number;
+    decemberMonthNet: number;
 };
 
 export function taxCalculation(yearlySalary: number): TaxCalculationResult {
@@ -23,6 +25,10 @@ export function taxCalculation(yearlySalary: number): TaxCalculationResult {
     const vacationMoneyBase = yearlySalary / (1.12); // Gross / (1 + Vacation money rate). Usually calculated from gross minus last year's vacation money.
     const vacationMoney = vacationMoneyBase * 0.102; // Minimum rate is 10.2%. Many hve 12%, and above people above 60% have increased rates from base.
     const grossWithoutVacationMoney = yearlySalary - vacationMoney;
+    const halfMonthTax = totalTax / 21;
+    const normalMonthTax = halfMonthTax * 2;
+    const decemberTax = halfMonthTax;
+    const grossMonthlyWithoutVacationMoney = grossWithoutVacationMoney / 11;
     const netMonthlyAdjusted = (grossWithoutVacationMoney - totalTax) / 11;
 
     console.debug(`Net monthly salaray adjusted for vacation money: ${netMonthlyAdjusted}`);
@@ -34,6 +40,8 @@ export function taxCalculation(yearlySalary: number): TaxCalculationResult {
         monthlySalaryNet: yearlySalaryNet / 12,
         vacationMoney: vacationMoney,
         netMonthlyAdjusted: netMonthlyAdjusted,
+        normalMonthNet: grossMonthlyWithoutVacationMoney - normalMonthTax,
+        decemberMonthNet: grossMonthlyWithoutVacationMoney - decemberTax,
     }
 
     return taxCalculationResult;
@@ -47,9 +55,12 @@ function salaryDeduction(yearlySalary: number): number {
 
     // Calculate standard deduction (minstefradrag)
     const standardDeduction = Math.min(yearlySalary * standardDeductionRate, maxStandardDeduction);
+    
+    // Would be interesting to also calculate how much taxes are saved due to deductions.
+    const costDeduction = 0; // TODO: add adjustable deduction. Many have loan interest costs that are deductable.
 
     // Calculate taxable income (grunnlag for skatt)
-    const taxableIncome = Math.max(yearlySalary - standardDeduction - personalDeduction, 0);
+    const taxableIncome = Math.max(yearlySalary - standardDeduction - personalDeduction - costDeduction, 0);
 
     return taxableIncome;
 }
