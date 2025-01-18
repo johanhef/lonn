@@ -13,20 +13,21 @@ const SalaryCalculator = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (isNaN(Number(value))) return;
+    const yearlyAfterTax = calculateSalaryAfterTax(Number(value));
 
     if (name === "yearlySalary") {
       setFormData({
         yearlySalary: value,
         monthlySalary: value ? (Number(value) / 12).toFixed(0) : "",
-        yearlySalaryAfterTax: value ? calculateSalaryAfterTax(Number(value), 40).toFixed(0) : "",
-        monthlySalaryAfterTax: value ? calculateSalaryAfterTax(Number(value) / 12, 40).toFixed(0) : ""
+        yearlySalaryAfterTax: yearlyAfterTax.toFixed(0),
+        monthlySalaryAfterTax: (yearlyAfterTax / 12).toFixed(0)
       });
     } else if (name === "monthlySalary") {
       setFormData({
         monthlySalary: value,
         yearlySalary: value ? (Number(value) * 12).toFixed(0) : "",
-        yearlySalaryAfterTax: value ? calculateSalaryAfterTax(Number(value) * 12, 40).toFixed(0) : "",
-        monthlySalaryAfterTax: value ? calculateSalaryAfterTax(Number(value) / 12, 40).toFixed(0) : ""
+        yearlySalaryAfterTax: yearlyAfterTax.toFixed(0),
+        monthlySalaryAfterTax: (yearlyAfterTax / 12).toFixed(0)
       });
     }
   };
