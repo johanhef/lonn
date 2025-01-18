@@ -36,45 +36,49 @@ const SalaryCalculator = () => {
       <div className="p-8 w-full max-w-md">
         <form className="space-y-4">
           <div>
-            <label className="block text-gray-600">Årslønn</label>
+            <label className="block">Årslønn</label>
             <input
               type="text"
               name="yearlySalary"
               value={formData.yearlySalary}
               onChange={handleInputChange}
-              className={`w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500`}
+              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
+                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
             />
           </div>
 
           <div>
-            <label className="block text-gray-600">Månedslønn</label>
+            <label className="block">Månedslønn</label>
             <input
               type="text"
               name="monthlySalary"
               value={formData.monthlySalary}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500"
+              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
+                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
             />
           </div>
 
+            <div>
+              <label className="block">Årslønn etter skatt</label>
+              <input
+                type="text"
+                name="yearlySalaryAfterTax"
+                value={formData.yearlySalaryAfterTax}
+                onChange={handleInputChange}
+                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
+                          border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
+              />
+            </div>
           <div>
-            <label className="block text-gray-600">Årslønn etter skatt</label>
-            <input
-              type="text"
-              name="yearlySalaryAfterTax"
-              value={formData.yearlySalaryAfterTax}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-600">Månedslønn etter skatt</label>
+            <label className="block">Månedslønn etter skatt</label>
             <input
               type="text"
               name="monthlySalaryAfterTax"
               value={formData.monthlySalaryAfterTax}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 border-gray-300 focus:ring-blue-500"
+              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
+                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
             />
           </div>
         </form>
