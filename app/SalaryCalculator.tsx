@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { calculateSalaryAfterTax } from "./Calculator";
+import { taxCalculation } from "./Calculator";
 
 const SalaryCalculator = () => {
   const [formData, setFormData] = useState({
@@ -9,27 +9,26 @@ const SalaryCalculator = () => {
     monthlySalary: "",
     yearlySalaryAfterTax: "",
     monthlySalaryAfterTax: "",
+    vacationMoney: "",
+    monthlyAdjusted: "",
   });
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (isNaN(Number(value))) return;
-    const yearlyAfterTax = calculateSalaryAfterTax(Number(value));
-
-    if (name === "yearlySalary") {
-      setFormData({
-        yearlySalary: value,
-        monthlySalary: value ? (Number(value) / 12).toFixed(0) : "",
-        yearlySalaryAfterTax: yearlyAfterTax.toFixed(0),
-        monthlySalaryAfterTax: (yearlyAfterTax / 12).toFixed(0)
-      });
-    } else if (name === "monthlySalary") {
-      setFormData({
-        monthlySalary: value,
-        yearlySalary: value ? (Number(value) * 12).toFixed(0) : "",
-        yearlySalaryAfterTax: yearlyAfterTax.toFixed(0),
-        monthlySalaryAfterTax: (yearlyAfterTax / 12).toFixed(0)
-      });
+    let yearlyInputGross = (name === "yearlySalary") ? Number(value) : 0;
+    if (name === "monthlySalary") {
+      yearlyInputGross = Number(value) * 12;
     }
+    const taxResult = taxCalculation(yearlyInputGross);
+
+    setFormData({
+      yearlySalary: yearlyInputGross.toFixed(),
+      monthlySalary: (yearlyInputGross / 12).toFixed(0),
+      yearlySalaryAfterTax: taxResult.yearlySalaryNet.toFixed(0),
+      monthlySalaryAfterTax: taxResult.monthlySalaryNet.toFixed(0),
+      vacationMoney: taxResult.vacationMoney.toFixed(0),
+      monthlyAdjusted: taxResult.netMonthlyAdjusted.toFixed(0),
+    });
   };
 
   return (
@@ -85,6 +84,32 @@ const SalaryCalculator = () => {
               pattern="[0-9]*"
               name="monthlySalaryAfterTax"
               value={formData.monthlySalaryAfterTax}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
+                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
+            />
+          </div>
+          <div>
+            <label className="block">Feriepenger</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              name="monthlySalaryAfterTax"
+              value={formData.vacationMoney}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
+                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
+            />
+          </div>
+          <div>
+            <label className="block">Månedslønn etter skatt justert for feriepenger</label>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              name="monthlySalaryAfterTax"
+              value={formData.monthlyAdjusted}
               onChange={handleInputChange}
               className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
                         border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"

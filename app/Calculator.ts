@@ -1,8 +1,12 @@
-export function calculateSalaryAfterTax(salary: number): number {
-    return salary - calculateTotalTax(salary)
-}
+export type TaxCalculationResult = {
+    totalTax: number;
+    yearlySalaryNet: number;
+    monthlySalaryNet: number;
+    vacationMoney: number;
+    netMonthlyAdjusted: number;
+};
 
-function calculateTotalTax(yearlySalary: number): number {
+export function taxCalculation(yearlySalary: number): TaxCalculationResult {
     const trygdeavgift = calculateTrygdeavgift(yearlySalary);
     const trinnskatt = calculateTrinnskatt(yearlySalary);
 
@@ -13,7 +17,26 @@ function calculateTotalTax(yearlySalary: number): number {
     console.debug("trygdeavgift:", trygdeavgift);
     console.debug("trinnskatt:", trinnskatt);
     console.debug(`inntektsskatt: ${inntektsskatt}, grunnlag: ${incomeTaxBase}`);
-    return trygdeavgift + trinnskatt + inntektsskatt;
+
+    const totalTax = trygdeavgift + trinnskatt + inntektsskatt;
+
+    const vacationMoneyBase = yearlySalary / (1.12); // Gross / (1 + Vacation money rate). Usually calculated from gross minus last year's vacation money.
+    const vacationMoney = vacationMoneyBase * 0.102; // Minimum rate is 10.2%. Many hve 12%, and above people above 60% have increased rates from base.
+    const grossWithoutVacationMoney = yearlySalary - vacationMoney;
+    const netMonthlyAdjusted = (grossWithoutVacationMoney - totalTax) / 11;
+
+    console.debug(`Net monthly salaray adjusted for vacation money: ${netMonthlyAdjusted}`);
+
+    const yearlySalaryNet = yearlySalary - totalTax;
+    const taxCalculationResult: TaxCalculationResult = {
+        totalTax: totalTax,
+        yearlySalaryNet: yearlySalaryNet,
+        monthlySalaryNet: yearlySalaryNet / 12,
+        vacationMoney: vacationMoney,
+        netMonthlyAdjusted: netMonthlyAdjusted,
+    }
+
+    return taxCalculationResult;
 }
 
 function salaryDeduction(yearlySalary: number): number {
