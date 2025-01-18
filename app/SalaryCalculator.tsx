@@ -39,6 +39,8 @@ const SalaryCalculator = () => {
             <label className="block">Årslønn</label>
             <input
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               name="yearlySalary"
               value={formData.yearlySalary}
               onChange={handleInputChange}
@@ -51,6 +53,8 @@ const SalaryCalculator = () => {
             <label className="block">Månedslønn</label>
             <input
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               name="monthlySalary"
               value={formData.monthlySalary}
               onChange={handleInputChange}
@@ -63,6 +67,8 @@ const SalaryCalculator = () => {
               <label className="block">Årslønn etter skatt</label>
               <input
                 type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 name="yearlySalaryAfterTax"
                 value={formData.yearlySalaryAfterTax}
                 onChange={handleInputChange}
@@ -74,6 +80,8 @@ const SalaryCalculator = () => {
             <label className="block">Månedslønn etter skatt</label>
             <input
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               name="monthlySalaryAfterTax"
               value={formData.monthlySalaryAfterTax}
               onChange={handleInputChange}
