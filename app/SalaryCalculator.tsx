@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { taxCalculation } from "./Calculator";
+import { taxCalculation, calculateFromNormalMonthlyNet } from "./Calculator";
 
 const SalaryCalculator = () => {
   const [formData, setFormData] = useState({
@@ -17,15 +17,22 @@ const SalaryCalculator = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (isNaN(Number(value))) return;
+
+    let taxResult = null;
     let yearlyInputGross = (name === "yearlySalary") ? Number(value) : 0;
     if (name === "monthlySalary") {
       yearlyInputGross = Number(value) * 12;
     }
-    const taxResult = taxCalculation(yearlyInputGross);
+
+    if (name === "normalMonthNet") {
+      taxResult = calculateFromNormalMonthlyNet(Number(value));
+    } else {
+      taxResult = taxCalculation(yearlyInputGross);
+    }
 
     setFormData({
-      yearlySalary: yearlyInputGross.toFixed(),
-      monthlySalary: (yearlyInputGross / 12).toFixed(0),
+      yearlySalary: taxResult.yearlyGross.toFixed(),
+      monthlySalary: taxResult.monthlyGross.toFixed(0),
       yearlySalaryAfterTax: taxResult.yearlySalaryNet.toFixed(0),
       monthlySalaryAfterTax: taxResult.monthlySalaryNet.toFixed(0),
       vacationMoney: taxResult.vacationMoney.toFixed(0),
@@ -99,7 +106,7 @@ const SalaryCalculator = () => {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              name="monthlySalaryAfterTax"
+              name="vacationMoney"
               value={formData.vacationMoney}
               onChange={handleInputChange}
               className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
@@ -112,7 +119,7 @@ const SalaryCalculator = () => {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              name="monthlySalaryAfterTax"
+              name="monthlyAdjusted"
               value={formData.monthlyAdjusted}
               onChange={handleInputChange}
               className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
@@ -125,7 +132,7 @@ const SalaryCalculator = () => {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              name="monthlySalaryAfterTax"
+              name="normalMonthNet"
               value={formData.normalMonthNet}
               onChange={handleInputChange}
               className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
@@ -138,7 +145,7 @@ const SalaryCalculator = () => {
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              name="monthlySalaryAfterTax"
+              name="decemberNet"
               value={formData.decemberNet}
               onChange={handleInputChange}
               className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 

@@ -1,4 +1,6 @@
 export type TaxCalculationResult = {
+    yearlyGross: number;
+    monthlyGross: number;
     totalTax: number;
     yearlySalaryNet: number;
     monthlySalaryNet: number;
@@ -7,6 +9,42 @@ export type TaxCalculationResult = {
     normalMonthNet: number;
     decemberMonthNet: number;
 };
+
+export function calculateFromNormalMonthlyNet(normalMonthNet: number): TaxCalculationResult {
+    let previousGuess = normalMonthNet * 12 * 1.4;
+    
+    let result = taxCalculation(previousGuess);
+    let diff = result.normalMonthNet - normalMonthNet;
+    let max = previousGuess * 1.2;
+    let min = previousGuess * 0.8;
+
+    let guess = previousGuess;
+    let i = 0;
+
+    while (Math.abs(diff) > 0.29 && i < 30) {
+        console.log(`Iteration ${i}, guess ${guess}, diff ${diff}, min ${min}, ${max}`)
+        if (diff < 0) {
+            if (min < previousGuess) {
+                min = previousGuess;
+            }
+            guess += (max - previousGuess) / 2;
+        } else {
+            if (max > previousGuess) {
+                max = previousGuess;
+            }
+            guess -= (previousGuess - min) / 2;
+        }
+        
+        previousGuess = guess;
+        result = taxCalculation(guess);
+        diff = result.normalMonthNet - normalMonthNet;
+        i++;
+    }
+
+    console.log(`Result found after ${i} iterations.`);
+
+    return result;
+}
 
 export function taxCalculation(yearlySalary: number): TaxCalculationResult {
     const trygdeavgift = calculateTrygdeavgift(yearlySalary);
@@ -31,10 +69,12 @@ export function taxCalculation(yearlySalary: number): TaxCalculationResult {
     const grossMonthlyWithoutVacationMoney = grossWithoutVacationMoney / 11;
     const netMonthlyAdjusted = (grossWithoutVacationMoney - totalTax) / 11;
 
-    console.debug(`Net monthly salaray adjusted for vacation money: ${netMonthlyAdjusted}`);
+    // console.debug(`Net monthly salaray adjusted for vacation money: ${netMonthlyAdjusted}`);
 
     const yearlySalaryNet = yearlySalary - totalTax;
     const taxCalculationResult: TaxCalculationResult = {
+        yearlyGross: yearlySalary,
+        monthlyGross: yearlySalary / 12,
         totalTax: totalTax,
         yearlySalaryNet: yearlySalaryNet,
         monthlySalaryNet: yearlySalaryNet / 12,
@@ -76,7 +116,7 @@ function calculateTrygdeavgift(yearlySalary: number): number {
     const differenceMaxRate = 0.25; // 2025
     const difference = yearlySalary - minimumSalary;
     const trygdeRate = 0.077; // 2025
-    return Math.min(yearlySalary * trygdeRate, difference * differenceMaxRate);
+    return Math.max(0, Math.min(yearlySalary * trygdeRate, difference * differenceMaxRate));
 }
 
 function calculateTrinnskatt(yearlySalary: number): number {
@@ -103,7 +143,7 @@ function calculateTrinnskatt(yearlySalary: number): number {
         const stepTax = Math.max(0, (Math.min(yearlySalary, step.max) - step.min) * step.rate);
         trinnskatt += stepTax;
 
-        console.debug(`Step ${i}, tax: ${stepTax}`)
+        // console.debug(`Step ${i}, tax: ${stepTax}`)
     }
 
     return Math.max(trinnskatt, 0); // Ensure non-negative tax
