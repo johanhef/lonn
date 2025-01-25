@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { calculateFromAnyValue, TaxCalculationResultKey, TaxCalculationResult } from "./Calculator";
-import { HelpCircle } from "lucide-react";
+import HelpPopover from "./components/HelpPopover";
 
 
-interface FormData { 
+interface FormData {
   yearlySalary: string;
   monthlySalary: string;
   yearlySalaryAfterTax: string;
@@ -84,7 +84,7 @@ const SalaryCalculator = () => {
       const inputNumber = Number(previousValues[editingField]);
       const result = calculateFromAnyValue(inputNumber, key);
       const newFormData = formDataFromTaxCalculationResult(result);
-  
+
       return { ...newFormData, [editingField]: inputValue };
     });
 
@@ -96,8 +96,8 @@ const SalaryCalculator = () => {
         <form className="space-y-4">
           <div>
             <div className="flex items-center justify-between">
-              <label className="block">Årslønn</label>
-              <HelpCircle strokeWidth={1.6} />
+              <label className="block">Brutto årslønn</label>
+              <HelpPopover helpText="Brutto årslønn er det du tjener i året før skatt." />
             </div>
             <input
               type="text"
@@ -113,8 +113,8 @@ const SalaryCalculator = () => {
 
           <div>
             <div className="flex items-center justify-between">
-              <label className="block">Månedslønn</label>
-              <HelpCircle strokeWidth={1.6} />
+              <label className="block">Brutto månedslønn</label>
+              <HelpPopover helpText="Brutto månedslønn er det du tjener i måneden før skatt. Med andre ord, brutto årslønn delt på 12." />
             </div>
             <input
               type="text"
@@ -128,26 +128,27 @@ const SalaryCalculator = () => {
             />
           </div>
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label className="block">Årslønn etter skatt</label>
-                <HelpCircle strokeWidth={1.6} />
-              </div>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                name="yearlySalaryAfterTax"
-                value={formData.yearlySalaryAfterTax}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                          border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-              />
+          <div>
+            <div className="flex items-center justify-between">
+              <label className="block">Årslønn etter skatt</label>
+              <HelpPopover helpText="Netto årslønn er det du tjener i året etter at skatt er betalt, inkludert opptjente feriepenger." />
             </div>
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              name="yearlySalaryAfterTax"
+              value={formData.yearlySalaryAfterTax}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
+                          border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
+            />
+          </div>
           <div>
             <div className="flex items-center justify-between">
               <label className="block">Månedslønn etter skatt</label>
-              <HelpCircle strokeWidth={1.6} />
+              <HelpPopover helpText="Nett månedslønn er det du tjener i måneden etter at skatt er betalt.
+                De fleste får utbetalt mindre enn dette hver måned fordi det settes av litt til feriepenger og halv skatt i desember." />
             </div>
             <input
               type="text"
@@ -163,7 +164,9 @@ const SalaryCalculator = () => {
           <div>
             <div className="flex items-center justify-between">
               <label className="block">Feriepenger</label>
-              <HelpCircle strokeWidth={1.6} />
+              <HelpPopover helpText={`Feriepenger beregnes fra fjorårets lønn. 
+                ${formData.vacationMoney} er et estimat basert på oppgitt årslønn (${formData.yearlySalary}). 
+                Tjente du mindre enn dette i fjor, vil årets feriepenger være lavere enn dette.`} />
             </div>
             <input
               type="text"
@@ -179,7 +182,9 @@ const SalaryCalculator = () => {
           <div>
             <div className="flex items-center justify-between">
               <label className="block">Utbetalt månedslønn</label>
-              <HelpCircle strokeWidth={1.6} />
+              <HelpPopover helpText={`Sett bort fra juni og desember, 
+                er ${formData.normalMonthNet} et estimat på det som faktisk utbetales i lønn hver måned. Dette tallet er lavere enn netto månedslønn, 
+                for å få utbetalt litt i desember, og litt mer som feriepenger.`} />
             </div>
             <input
               type="text"
@@ -195,7 +200,8 @@ const SalaryCalculator = () => {
           <div>
             <div className="flex items-center justify-between">
               <label className="block">Utbetalt desember</label>
-              <HelpCircle strokeWidth={1.6} />
+              <HelpPopover helpText="I desember betaler de fleste halv skatt, og får dermed betydelig mer utbetalt enn ellers.
+               Dette er mulig fordi man har betalt litt mer skatt resten av året." />
             </div>
             <input
               type="text"
