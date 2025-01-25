@@ -47,7 +47,6 @@ export function calculateFromAnyValue(inputValue: number, valueType: TaxCalculat
     let i = 0;
 
     while (Math.abs(diff) > 0.29 && i < 30) {
-        console.debug(`Iteration ${i}, guess ${guess}, diff ${diff}, min ${min}, ${max}`)
         if (diff < 0) {
             if (min < previousGuess) {
                 min = previousGuess;
@@ -66,8 +65,6 @@ export function calculateFromAnyValue(inputValue: number, valueType: TaxCalculat
         i++;
     }
 
-    console.debug(`Result found after ${i} iterations.`);
-
     return result;
 }
 
@@ -79,10 +76,6 @@ export function taxCalculation(yearlySalary: number): TaxCalculationResult {
     const inntektsskatt = calculateInntektsskatt(incomeTaxBase);
 
     // Step 3: Sum up all taxes
-    console.debug("trygdeavgift:", trygdeavgift);
-    console.debug("trinnskatt:", trinnskatt);
-    console.debug(`inntektsskatt: ${inntektsskatt}, grunnlag: ${incomeTaxBase}`);
-
     const totalTax = trygdeavgift + trinnskatt + inntektsskatt;
 
     const vacationMoneyBase = yearlySalary / (1.12); // Gross / (1 + Vacation money rate). Usually calculated from gross minus last year's vacation money.
@@ -93,8 +86,6 @@ export function taxCalculation(yearlySalary: number): TaxCalculationResult {
     const decemberTax = halfMonthTax;
     const grossMonthlyWithoutVacationMoney = grossWithoutVacationMoney / 11;
     const netMonthlyAdjusted = (grossWithoutVacationMoney - totalTax) / 11;
-
-    // console.debug(`Net monthly salaray adjusted for vacation money: ${netMonthlyAdjusted}`);
 
     const yearlySalaryNet = yearlySalary - totalTax;
     const taxCalculationResult: TaxCalculationResult = {

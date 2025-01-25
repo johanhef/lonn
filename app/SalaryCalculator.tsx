@@ -75,7 +75,6 @@ const SalaryCalculator = () => {
   };
 
   useEffect(() => {
-    console.debug("useEffect formdata. Editing field: ", editingField);
     setFormData((prev) => {
       const previousValues = { ...prev };
       const inputValue = previousValues[editingField];
