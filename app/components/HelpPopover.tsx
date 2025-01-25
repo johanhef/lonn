@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useFloating, autoUpdate, offset, shift } from "@floating-ui/react";
 import { HelpCircle } from "lucide-react";
 
-export default function HelpPopover({ helpText }: { helpText: string }) {
+export default function HelpPopover({ id, label, helpText }: { id: string, label: string, helpText: string }) {
   const [open, setOpen] = useState(false);
   const { refs, floatingStyles } = useFloating({
     open,
@@ -12,6 +12,7 @@ export default function HelpPopover({ helpText }: { helpText: string }) {
   });
 
   const popoverRef = useRef<HTMLDivElement>(null);
+  const popoverId = id;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -42,8 +43,12 @@ export default function HelpPopover({ helpText }: { helpText: string }) {
           }
         }
         className="flex items-center justify-center w-6 h-6 cursor-pointer"
+        aria-haspopup="true"
+        aria-expanded={open}
+        aria-controls={popoverId}
+        aria-label={label}
       >
-        <HelpCircle size={18} strokeWidth={1.6} />
+        <HelpCircle aria-label={label} size={18} strokeWidth={1.6} />
       </button>
 
       {/* Popover Content */}
@@ -52,6 +57,7 @@ export default function HelpPopover({ helpText }: { helpText: string }) {
           ref={refs.setFloating}
           style={{ ...floatingStyles, zIndex: 9999 }}
           className="p-2 w-48 text-sm bg-white dark:bg-zinc-700 border dark:border-zinc-700 rounded-md shadow-lg"
+          id={popoverId}
         >
           {helpText}
         </div>
