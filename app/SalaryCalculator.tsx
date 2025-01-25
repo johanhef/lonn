@@ -161,19 +161,6 @@ const SalaryCalculator = () => {
             />
           </div>
           <div>
-            <label className="block">Månedslønn etter skatt justert for feriepenger</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="monthlyAdjusted"
-              value={formData.monthlyAdjusted}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-            />
-          </div>
-          <div>
             <label className="block">Utbetalt månedslønn</label>
             <input
               type="text"
