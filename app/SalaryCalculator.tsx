@@ -147,7 +147,7 @@ const SalaryCalculator = () => {
           <div>
             <div className="flex items-center justify-between">
               <label className="block">Månedslønn etter skatt</label>
-              <HelpPopover helpText="Nett månedslønn er det du tjener i måneden etter at skatt er betalt.
+              <HelpPopover helpText="Netto månedslønn er det du tjener i måneden etter at skatt er betalt.
                 De fleste får utbetalt mindre enn dette hver måned fordi det settes av litt til feriepenger og halv skatt i desember." />
             </div>
             <input
