@@ -10,11 +10,36 @@ export type TaxCalculationResult = {
     decemberMonthNet: number;
 };
 
-export function calculateFromNormalMonthlyNet(normalMonthNet: number): TaxCalculationResult {
-    let previousGuess = normalMonthNet * 12 * 1.4;
+export type TaxCalculationResultKey = keyof TaxCalculationResult;
+
+function guessYearlySalary(newValue: number, valueType: TaxCalculationResultKey): number {
+    switch (valueType) {
+        case "yearlyGross":
+            return newValue;
+        case "monthlyGross":
+            return newValue * 12;
+        case "yearlySalaryNet":
+            return newValue * 1.4;
+        case "monthlySalaryNet":
+            return newValue * 12 * 1.4;
+        case "vacationMoney":
+            return newValue * 12 * 0.95;
+        case "netMonthlyAdjusted":
+            return newValue * 12 * 1.42;
+        case "normalMonthNet":
+            return newValue * 11 * 1.43;
+        case "decemberMonthNet":
+            return newValue * 12 * 1.3;
+        default:
+            throw new Error("Invalid valueType");
+    }
+}
+
+export function calculateFromAnyValue(inputValue: number, valueType: TaxCalculationResultKey): TaxCalculationResult {
+    let previousGuess = guessYearlySalary(inputValue, valueType);
     
     let result = taxCalculation(previousGuess);
-    let diff = result.normalMonthNet - normalMonthNet;
+    let diff = result[valueType] - inputValue;
     let max = previousGuess * 1.2;
     let min = previousGuess * 0.8;
 
@@ -22,7 +47,7 @@ export function calculateFromNormalMonthlyNet(normalMonthNet: number): TaxCalcul
     let i = 0;
 
     while (Math.abs(diff) > 0.29 && i < 30) {
-        console.log(`Iteration ${i}, guess ${guess}, diff ${diff}, min ${min}, ${max}`)
+        console.debug(`Iteration ${i}, guess ${guess}, diff ${diff}, min ${min}, ${max}`)
         if (diff < 0) {
             if (min < previousGuess) {
                 min = previousGuess;
@@ -37,11 +62,11 @@ export function calculateFromNormalMonthlyNet(normalMonthNet: number): TaxCalcul
         
         previousGuess = guess;
         result = taxCalculation(guess);
-        diff = result.normalMonthNet - normalMonthNet;
+        diff = result[valueType] - inputValue;
         i++;
     }
 
-    console.log(`Result found after ${i} iterations.`);
+    console.debug(`Result found after ${i} iterations.`);
 
     return result;
 }
@@ -128,7 +153,6 @@ function calculateTrinnskatt(yearlySalary: number): number {
         Trinn 4: Inntekten mellom 942 400 og 1 410 749 kr (16,7 prosent trinnskatt)
         Trinn 5: Inntekten over 1 410 750 kr (17,7 prosent trinnskatt)
     */
-
     const steps = [
         { min: 217400, max: 306049, rate: 0.017 },
         { min: 306050, max: 697149, rate: 0.04 },
@@ -139,11 +163,9 @@ function calculateTrinnskatt(yearlySalary: number): number {
 
     let trinnskatt = 0;
 
-    for (const [i, step] of steps.entries()) {
+    for (const step of steps) {
         const stepTax = Math.max(0, (Math.min(yearlySalary, step.max) - step.min) * step.rate);
         trinnskatt += stepTax;
-
-        // console.debug(`Step ${i}, tax: ${stepTax}`)
     }
 
     return Math.max(trinnskatt, 0); // Ensure non-negative tax

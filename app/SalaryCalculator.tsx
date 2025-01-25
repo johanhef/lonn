@@ -1,10 +1,58 @@
 "use client";
 
-import { useState } from "react";
-import { taxCalculation, calculateFromNormalMonthlyNet } from "./Calculator";
+import { useState, useEffect } from "react";
+import { calculateFromAnyValue, TaxCalculationResultKey, TaxCalculationResult } from "./Calculator";
+
+
+interface FormData { 
+  yearlySalary: string;
+  monthlySalary: string;
+  yearlySalaryAfterTax: string;
+  monthlySalaryAfterTax: string;
+  vacationMoney: string;
+  monthlyAdjusted: string;
+  normalMonthNet: string;
+  decemberNet: string;
+}
+
+type FormDataKey = keyof FormData;
+
+const calculatorKeyFromFormDataKey = (key: FormDataKey): TaxCalculationResultKey => {
+  switch (key) {
+    case "yearlySalary":
+      return "yearlyGross";
+    case "monthlySalary":
+      return "monthlyGross";
+    case "yearlySalaryAfterTax":
+      return "yearlySalaryNet";
+    case "monthlySalaryAfterTax":
+      return "monthlySalaryNet";
+    case "vacationMoney":
+      return "vacationMoney";
+    case "monthlyAdjusted":
+      return "netMonthlyAdjusted";
+    case "normalMonthNet":
+      return "normalMonthNet";
+    case "decemberNet":
+      return "decemberMonthNet";
+  }
+}
+
+const formDataFromTaxCalculationResult = (result: TaxCalculationResult): FormData => {
+  return {
+    yearlySalary: result.yearlyGross.toFixed(0),
+    monthlySalary: result.monthlyGross.toFixed(0),
+    yearlySalaryAfterTax: result.yearlySalaryNet.toFixed(0),
+    monthlySalaryAfterTax: result.monthlySalaryNet.toFixed(0),
+    vacationMoney: result.vacationMoney.toFixed(0),
+    monthlyAdjusted: result.netMonthlyAdjusted.toFixed(0),
+    normalMonthNet: result.normalMonthNet.toFixed(0),
+    decemberNet: result.decemberMonthNet.toFixed(0),
+  };
+}
 
 const SalaryCalculator = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     yearlySalary: "",
     monthlySalary: "",
     yearlySalaryAfterTax: "",
@@ -14,33 +62,33 @@ const SalaryCalculator = () => {
     normalMonthNet: "",
     decemberNet: "",
   });
+
+  const [editingField, setEditingField] = useState<FormDataKey>("yearlySalary");
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (isNaN(Number(value))) return;
 
-    let taxResult = null;
-    let yearlyInputGross = (name === "yearlySalary") ? Number(value) : 0;
-    if (name === "monthlySalary") {
-      yearlyInputGross = Number(value) * 12;
-    }
-
-    if (name === "normalMonthNet") {
-      taxResult = calculateFromNormalMonthlyNet(Number(value));
-    } else {
-      taxResult = taxCalculation(yearlyInputGross);
-    }
-
-    setFormData({
-      yearlySalary: taxResult.yearlyGross.toFixed(),
-      monthlySalary: taxResult.monthlyGross.toFixed(0),
-      yearlySalaryAfterTax: taxResult.yearlySalaryNet.toFixed(0),
-      monthlySalaryAfterTax: taxResult.monthlySalaryNet.toFixed(0),
-      vacationMoney: taxResult.vacationMoney.toFixed(0),
-      monthlyAdjusted: taxResult.netMonthlyAdjusted.toFixed(0),
-      normalMonthNet: taxResult.normalMonthNet.toFixed(0),
-      decemberNet: taxResult.decemberMonthNet.toFixed(0),
-    });
+    const editingField = name as FormDataKey;
+    setEditingField(editingField);
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  useEffect(() => {
+    console.debug("useEffect formdata. Editing field: ", editingField);
+    setFormData((prev) => {
+      const previousValues = { ...prev };
+      const inputValue = previousValues[editingField];
+
+      const key = calculatorKeyFromFormDataKey(editingField);
+      const inputNumber = Number(previousValues[editingField]);
+      const result = calculateFromAnyValue(inputNumber, key);
+      const newFormData = formDataFromTaxCalculationResult(result);
+  
+      return { ...newFormData, [editingField]: inputValue };
+    });
+
+  }, [editingField, formData[editingField]]);
 
   return (
     <div className="flex items-center justify-center">
