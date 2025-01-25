@@ -13,8 +13,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lønn",
-  description: "Lønn & skattekalkulator",
+  title: "Betalt.net - Lønn & Skattekalkulator",
+  description: "Lønn & skattekalkulator. Beregn netto årslønn, månedslønn, feriepenger og utbetalt per måned.",
+  keywords: ["lønn", "skatt", "kalkulator", "lønnskalkulator", "skattekalkulator", "feriepenger", "nettolønn", "månedslønn", "utbetalt", "utbetalt per måned"],
+  icons: {
+    icon: "/favicon.ico"
+  },
+  alternates: {
+    canonical: "https://betalt.net",
+  },
+  openGraph: {
+    title: "Betalt.net - Lønn & Skattekalkulator",
+    description: "Beregn utbetalt lønn.",
+    url: "https://betalt.net/",
+    siteName: "Betalt.net",
+    images: [
+      {
+        url: "https://betalt.net/lonn-on-white.jpg",
+        width: 1200,
+        height: 575,
+      },
+    ],
+    type: "website",
+  },
 };
 
 export default function RootLayout({
