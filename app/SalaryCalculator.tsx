@@ -165,8 +165,8 @@ const SalaryCalculator = () => {
             <div className="flex items-center justify-between">
               <label className="block">Feriepenger</label>
               <HelpPopover helpText={`Feriepenger beregnes fra fjorårets lønn. 
-                ${formData.vacationMoney} er et estimat basert på oppgitt årslønn (${formData.yearlySalary}). 
-                Tjente du mindre enn dette i fjor, vil årets feriepenger være lavere enn dette.`} />
+              ${(formData.vacationMoney && formData.vacationMoney !== "0") ? formData.vacationMoney : "Dette"} er et estimat basert på oppgitt årslønn ${formData.yearlySalary ? ` (${formData.yearlySalary})` : ""}. 
+              Tjente du mindre enn dette i fjor, vil årets feriepenger være lavere enn dette.`} />
             </div>
             <input
               type="text"
@@ -183,7 +183,7 @@ const SalaryCalculator = () => {
             <div className="flex items-center justify-between">
               <label className="block">Utbetalt månedslønn</label>
               <HelpPopover helpText={`Sett bort fra juni og desember, 
-                er ${formData.normalMonthNet} et estimat på det som faktisk utbetales i lønn hver måned. Dette tallet er lavere enn netto månedslønn, 
+                er ${(formData.normalMonthNet && formData.normalMonthNet !== "0") ? formData.normalMonthNet : "dette"} et estimat på det som faktisk utbetales i lønn hver måned. Dette tallet er lavere enn netto månedslønn, 
                 for å få utbetalt litt i desember, og litt mer som feriepenger.`} />
             </div>
             <input
