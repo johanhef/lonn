@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { calculateFromAnyValue, TaxCalculationResultKey, TaxCalculationResult } from "./Calculator";
+import { HelpCircle } from "lucide-react";
 
 
 interface FormData { 
@@ -94,7 +95,10 @@ const SalaryCalculator = () => {
       <div className="p-8 w-full max-w-md">
         <form className="space-y-4">
           <div>
-            <label className="block">Årslønn</label>
+            <div className="flex items-center justify-between">
+              <label className="block">Årslønn</label>
+              <HelpCircle strokeWidth={1.6} />
+            </div>
             <input
               type="text"
               inputMode="numeric"
@@ -108,7 +112,10 @@ const SalaryCalculator = () => {
           </div>
 
           <div>
-            <label className="block">Månedslønn</label>
+            <div className="flex items-center justify-between">
+              <label className="block">Månedslønn</label>
+              <HelpCircle strokeWidth={1.6} />
+            </div>
             <input
               type="text"
               inputMode="numeric"
@@ -122,7 +129,10 @@ const SalaryCalculator = () => {
           </div>
 
             <div>
-              <label className="block">Årslønn etter skatt</label>
+              <div className="flex items-center justify-between">
+                <label className="block">Årslønn etter skatt</label>
+                <HelpCircle strokeWidth={1.6} />
+              </div>
               <input
                 type="text"
                 inputMode="numeric"
@@ -135,7 +145,10 @@ const SalaryCalculator = () => {
               />
             </div>
           <div>
-            <label className="block">Månedslønn etter skatt</label>
+            <div className="flex items-center justify-between">
+              <label className="block">Månedslønn etter skatt</label>
+              <HelpCircle strokeWidth={1.6} />
+            </div>
             <input
               type="text"
               inputMode="numeric"
@@ -148,7 +161,10 @@ const SalaryCalculator = () => {
             />
           </div>
           <div>
-            <label className="block">Feriepenger</label>
+            <div className="flex items-center justify-between">
+              <label className="block">Feriepenger</label>
+              <HelpCircle strokeWidth={1.6} />
+            </div>
             <input
               type="text"
               inputMode="numeric"
@@ -161,7 +177,10 @@ const SalaryCalculator = () => {
             />
           </div>
           <div>
-            <label className="block">Utbetalt månedslønn</label>
+            <div className="flex items-center justify-between">
+              <label className="block">Utbetalt månedslønn</label>
+              <HelpCircle strokeWidth={1.6} />
+            </div>
             <input
               type="text"
               inputMode="numeric"
@@ -174,7 +193,10 @@ const SalaryCalculator = () => {
             />
           </div>
           <div>
-            <label className="block">Utbetalt desember</label>
+            <div className="flex items-center justify-between">
+              <label className="block">Utbetalt desember</label>
+              <HelpCircle strokeWidth={1.6} />
+            </div>
             <input
               type="text"
               inputMode="numeric"
