@@ -9,7 +9,7 @@ export default function Home() {
         <div className="flex items-center justify-center">
           <Image
             className="dark:invert"
-            src="/lonn-logo.svg"
+            src="/lonn-logo.png"
             alt="Lønn logo"
             width={180}
             height={38}
