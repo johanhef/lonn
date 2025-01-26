@@ -36,6 +36,9 @@ function guessYearlySalary(newValue: number, valueType: TaxCalculationResultKey)
 }
 
 export function calculateFromAnyValue(inputValue: number, valueType: TaxCalculationResultKey): TaxCalculationResult {
+    const HIGH = 1;
+    const LOW = -1;
+
     let previousGuess = guessYearlySalary(inputValue, valueType);
     
     let result = taxCalculation(previousGuess);
@@ -45,18 +48,31 @@ export function calculateFromAnyValue(inputValue: number, valueType: TaxCalculat
 
     let guess = previousGuess;
     let i = 0;
+    const diffTypes: Array<number> = [];
 
-    while (Math.abs(diff) > 0.29 && i < 30) {
-        if (diff < 0) {
+    while (Math.abs(diff) > 0.29 && i < 100) {
+        const diffType = diff > 0 ? HIGH : LOW;
+        diffTypes.push(diffType);
+        if (diffType === LOW) {
             if (min < previousGuess) {
                 min = previousGuess;
             }
             guess += (max - previousGuess) / 2;
+
+            if (i > 10 && diffTypes.slice(-10).every(type => type === LOW)) {
+                max *= 1.2;
+                guess += (max - previousGuess) / 2;
+            }
         } else {
             if (max > previousGuess) {
                 max = previousGuess;
             }
             guess -= (previousGuess - min) / 2;
+            
+            if (i > 10 && diffTypes.slice(-10).every(type => type === HIGH)) {
+                min *= 0.8;
+                guess -= (previousGuess - min) / 2;
+            }
         }
         
         previousGuess = guess;

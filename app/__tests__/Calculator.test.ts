@@ -56,4 +56,39 @@ describe('Salary Calculator', () => {
 
         expect(Math.abs(result.yearlyGross - 60000)).toBeLessThan(1);
     });
+
+    test('Calculates correct salary from normal month net with high salary', () => {
+        const result = calculateFromAnyValue(1200000, "normalMonthNet");
+        console.log(result);
+
+        expect(Math.abs(result.normalMonthNet - 1200000)).toBeLessThan(1);
+    });
+
+    test('Calculates correct salary from monthly net salary high salary', () => {
+        const result = calculateFromAnyValue(90000000, "monthlySalaryNet");
+        console.log(result);
+
+        expect(Math.abs(result.monthlySalaryNet - 90000000)).toBeLessThan(1);
+    });
+
+    test('Calculates correct salary from normal month net with low salary', () => {
+        const result = calculateFromAnyValue(1000, "normalMonthNet");
+        console.log(result);
+
+        expect(Math.abs(result.normalMonthNet - 1000)).toBeLessThan(1);
+    });
+
+    test('Calculates correct salary from monthly net salary low salary', () => {
+        const result = calculateFromAnyValue(1000, "monthlySalaryNet");
+        console.log(result);
+
+        expect(Math.abs(result.monthlySalaryNet - 1000)).toBeLessThan(1);
+    });
+
+    test('Calculates correct salary from monthly net salary low salary', () => {
+        const result = calculateFromAnyValue(1, "monthlySalaryNet");
+        console.log(result);
+
+        expect(Math.abs(result.monthlySalaryNet - 1)).toBeLessThan(1);
+    });
 });
