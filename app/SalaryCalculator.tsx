@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { calculateFromAnyValue, TaxCalculationResultKey, TaxCalculationResult } from "./Calculator";
 import HelpPopover from "./components/HelpPopover";
+import FormattedNumberInput from "./components/NumberInput";
 
 
 interface FormData {
@@ -41,16 +42,25 @@ const calculatorKeyFromFormDataKey = (key: FormDataKey): TaxCalculationResultKey
 
 const formDataFromTaxCalculationResult = (result: TaxCalculationResult): FormData => {
   return {
-    yearlySalary: result.yearlyGross.toFixed(0),
-    monthlySalary: result.monthlyGross.toFixed(0),
-    yearlySalaryAfterTax: result.yearlySalaryNet.toFixed(0),
-    monthlySalaryAfterTax: result.monthlySalaryNet.toFixed(0),
-    vacationMoney: result.vacationMoney.toFixed(0),
-    monthlyAdjusted: result.netMonthlyAdjusted.toFixed(0),
-    normalMonthNet: result.normalMonthNet.toFixed(0),
-    decemberNet: result.decemberMonthNet.toFixed(0),
+    yearlySalary: formatNumber(result.yearlyGross.toFixed(0)),
+    monthlySalary: formatNumber(result.monthlyGross.toFixed(0)),
+    yearlySalaryAfterTax: formatNumber(result.yearlySalaryNet.toFixed(0)),
+    monthlySalaryAfterTax: formatNumber(result.monthlySalaryNet.toFixed(0)),
+    vacationMoney: formatNumber(result.vacationMoney.toFixed(0)),
+    monthlyAdjusted: formatNumber(result.netMonthlyAdjusted.toFixed(0)),
+    normalMonthNet: formatNumber(result.normalMonthNet.toFixed(0)),
+    decemberNet: formatNumber(result.decemberMonthNet.toFixed(0)),
   };
 }
+
+const formatNumber = (input: string) => {
+  // console.log("input", input);
+  // const numericValue = input.replace(/\D/g, ""); // Remove non-numeric characters
+  // console.log("numeric", numericValue);
+  // const formatted = new Intl.NumberFormat("nb-NO").format(Number(numericValue)); // Format with Norwegian locale
+  // console.log("formatted", formatted);
+  return input;
+};
 
 const SalaryCalculator = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -66,8 +76,7 @@ const SalaryCalculator = () => {
 
   const [editingField, setEditingField] = useState<FormDataKey>("yearlySalary");
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleInputChange = (name: string, value: string) => {
     if (isNaN(Number(value))) return;
 
     const editingField = name as FormDataKey;
@@ -99,17 +108,7 @@ const SalaryCalculator = () => {
               <label htmlFor="yearlySalary" className="block">Brutto årslønn</label>
               <HelpPopover id="yearlySalary-help" label="Brutto årslønn - hjelp" helpText="Brutto årslønn er det du tjener i året før skatt." />
             </div>
-            <input
-              id="yearlySalary"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="yearlySalary"
-              value={formData.yearlySalary}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-            />
+            <FormattedNumberInput value={formData.yearlySalary} onChange={(val) => handleInputChange("yearlySalary", val)} placeholder="Brutto årslønn" />
           </div>
 
           <div>
@@ -117,17 +116,7 @@ const SalaryCalculator = () => {
               <label htmlFor="monthlySalary" className="block">Brutto månedslønn</label>
               <HelpPopover id="monthlySalary-help" label="Brutto månedslønn - hjelp" helpText="Brutto månedslønn er det du tjener i måneden før skatt. Med andre ord, brutto årslønn delt på 12." />
             </div>
-            <input
-              id="monthlySalary"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="monthlySalary"
-              value={formData.monthlySalary}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-            />
+            <FormattedNumberInput value={formData.monthlySalary} onChange={(val) => handleInputChange("monthlySalary", val)} placeholder="Brutto månedslønn" />
           </div>
 
           <div>
@@ -135,17 +124,7 @@ const SalaryCalculator = () => {
               <label htmlFor="yearlySalaryAfterTax" className="block">Årslønn etter skatt</label>
               <HelpPopover id="yearlySalaryAfterTax-help" label="Årslønn etter skatt - hjelp" helpText="Netto årslønn er det du tjener i året etter at skatt er betalt, inkludert opptjente feriepenger." />
             </div>
-            <input
-              id="yearlySalaryAfterTax"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="yearlySalaryAfterTax"
-              value={formData.yearlySalaryAfterTax}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                          border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-            />
+            <FormattedNumberInput value={formData.yearlySalaryAfterTax} onChange={(val) => handleInputChange("yearlySalaryAfterTax", val)} placeholder="Årslønn etter skatt" />
           </div>
           <div>
             <div className="flex items-center justify-between">
@@ -153,17 +132,7 @@ const SalaryCalculator = () => {
               <HelpPopover id="monthlySalaryAfterTax-help" label="Månedslønn etter skatt - hjelp" helpText="Netto månedslønn er det du tjener i måneden etter at skatt er betalt.
                 De fleste får utbetalt mindre enn dette hver måned fordi det settes av litt til feriepenger og halv skatt i desember." />
             </div>
-            <input
-              id="monthlySalaryAfterTax"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="monthlySalaryAfterTax"
-              value={formData.monthlySalaryAfterTax}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-            />
+            <FormattedNumberInput value={formData.monthlySalaryAfterTax} onChange={(val) => handleInputChange("monthlySalaryAfterTax", val)} placeholder="Månedslønn etter skatt" />
           </div>
           <div>
             <div className="flex items-center justify-between">
@@ -172,17 +141,7 @@ const SalaryCalculator = () => {
               ${(formData.vacationMoney && formData.vacationMoney !== "0") ? formData.vacationMoney : "Dette"} er et estimat basert på oppgitt årslønn ${formData.yearlySalary ? ` (${formData.yearlySalary})` : ""}. 
               Tjente du mindre enn dette i fjor, vil årets feriepenger være lavere enn dette.`} />
             </div>
-            <input
-              id="vacationMoney"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="vacationMoney"
-              value={formData.vacationMoney}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-            />
+            <FormattedNumberInput value={formData.vacationMoney} onChange={(val) => handleInputChange("vacationMoney", val)} placeholder="Feriepenger" />
           </div>
           <div>
             <div className="flex items-center justify-between">
@@ -191,17 +150,7 @@ const SalaryCalculator = () => {
                 er ${(formData.normalMonthNet && formData.normalMonthNet !== "0") ? formData.normalMonthNet : "dette"} et estimat på det som faktisk utbetales i lønn hver måned. Dette tallet er lavere enn netto månedslønn, 
                 for å få utbetalt litt i desember, og litt mer som feriepenger.`} />
             </div>
-            <input
-              id="normalMonthNet"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="normalMonthNet"
-              value={formData.normalMonthNet}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-            />
+            <FormattedNumberInput value={formData.normalMonthNet} onChange={(val) => handleInputChange("normalMonthNet", val)} placeholder="Utbetalt månedslønn" />
           </div>
           <div>
             <div className="flex items-center justify-between">
@@ -209,17 +158,7 @@ const SalaryCalculator = () => {
               <HelpPopover id="decemberNet-help" label="Utbetalt desember - hjelp" helpText="I desember betaler de fleste halv skatt, og får dermed betydelig mer utbetalt enn ellers.
                Dette er mulig fordi man har betalt litt mer skatt resten av året." />
             </div>
-            <input
-              id="decemberNet"
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              name="decemberNet"
-              value={formData.decemberNet}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 
-                        border-gray-300 focus:ring-blue-500 bg-white dark:bg-zinc-800 border-gray-300 dark:border-gray-600"
-            />
+            <FormattedNumberInput value={formData.decemberNet} onChange={(val) => handleInputChange("decemberNet", val)} placeholder="Utbetalt desember" />
           </div>
         </form>
       </div>
